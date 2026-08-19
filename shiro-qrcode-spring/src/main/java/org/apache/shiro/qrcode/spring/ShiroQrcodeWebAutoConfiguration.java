@@ -1,0 +1,59 @@
+package org.apache.shiro.qrcode.spring;
+
+import org.apache.shiro.spring.web.config.AbstractShiroWebConfiguration;
+import org.springframework.beans.BeansException;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * Auto-configuration for Shiro QR code web authentication.
+ * <p>Enables QR code-based authentication when the {@code shiro.qrcode.enabled} property is set to {@code true}.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
+//https://blog.csdn.net/weixin_42058600/article/details/81837056
+@Configuration
+@AutoConfigureBefore( name = {
+	"org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguration",  // shiro-spring-boot-web-starter
+	"org.apache.shiro.qrcode.spring.ShiroBizWebAutoConfiguration" // spring-boot-starter-shiro-biz
+})
+/**
+ * <p>Configuration properties.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
+@ConditionalOnProperty(prefix = ShiroQrcodeProperties.PREFIX, value = "enabled", havingValue = "true")
+@EnableConfigurationProperties({ ShiroQrcodeProperties.class })
+public class ShiroQrcodeWebAutoConfiguration extends AbstractShiroWebConfiguration implements ApplicationContextAware {
+
+	private ApplicationContext applicationContext;
+	
+	
+
+	@Override
+	/**
+	 * Sets the application context.
+	 *
+	 * @param applicationContext the application context
+	 * @throws BeansException if an error occurs
+	 */
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
+
+	/**
+	 * Returns the application context.
+	 *
+	 * @return the application context
+	 */
+	public ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
+
+}
