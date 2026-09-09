@@ -33,10 +33,10 @@
             <timezone>+8</timezone>
         </developer>
     </developers>
-    <modules>
-        <module>shiro-qrcode-core</module>
-        <module>shiro-qrcode-spring</module>
-    </modules>
+    <subprojects>
+        <subproject>shiro-qrcode-core</subproject>
+        <subproject>shiro-qrcode-spring</subproject>
+    </subprojects>
     <properties>
         <!-- ═══ 第一段: 基础属性（自然排序）═══ -->
         <java.version>21</java.version>
