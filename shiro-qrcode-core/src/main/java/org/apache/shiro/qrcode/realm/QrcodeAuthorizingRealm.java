@@ -1,5 +1,6 @@
 package org.apache.shiro.qrcode.realm;
 
+import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.biz.realm.AbstractAuthorizingRealm;
 import org.apache.shiro.qrcode.token.QrcodeAuthenticationToken;
 
@@ -16,7 +17,7 @@ public class QrcodeAuthorizingRealm extends AbstractAuthorizingRealm {
 	 *
 	 * @return the authentication token class
 	 */
-	public Class<?> getAuthenticationTokenClass() {
+	public Class<? extends AuthenticationToken> getAuthenticationTokenClass() {
 		return QrcodeAuthenticationToken.class;
 	}
 

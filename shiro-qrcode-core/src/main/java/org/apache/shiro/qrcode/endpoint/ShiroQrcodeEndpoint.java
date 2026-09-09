@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
-import com.google.zxing.spring.boot.ZxingQrCodeTemplate;
+import com.google.zxing.QrCodeEncoder;
+import com.google.zxing.model.QrCodeRequest;
 
 /**
  * REST endpoint for Shiro QR code-based login authentication.
@@ -33,9 +34,9 @@ public class ShiroQrcodeEndpoint {
 	private static final String STATUS_EXPIRED = "expired";
 	
     private final StringRedisTemplate stringRedisTemplate;
-    private final ZxingQrCodeTemplate qrcodeTemplate;
+    private final QrCodeEncoder qrcodeTemplate;
 	
-	public ShiroQrcodeEndpoint(StringRedisTemplate stringRedisTemplate, ZxingQrCodeTemplate qrcodeTemplate) {
+	public ShiroQrcodeEndpoint(StringRedisTemplate stringRedisTemplate, QrCodeEncoder qrcodeTemplate) {
 		super();
 		this.stringRedisTemplate = stringRedisTemplate;
 		this.qrcodeTemplate = qrcodeTemplate;
@@ -57,7 +58,7 @@ public class ShiroQrcodeEndpoint {
 			
 			// 生成UUID
 			String uuid = UUID.randomUUID().toString();
-			String qrcode = getQrcodeTemplate().qrcodeBase64(uuid);
+			String qrcode = getQrcodeTemplate().encode(QrCodeRequest.builder(uuid).build()).base64();
 			// 每个老师的随机码都不相同 ： 打卡方式(1:定位打卡,2:刷脸打卡,3:数字打卡,4:二维码打卡,5:无感打卡)
 			getStringRedisTemplate().opsForValue().set(String.format("login-%s", uuid), STATUS_UNBIND, Duration.ofMinutes(1));
 			
@@ -88,7 +89,7 @@ public class ShiroQrcodeEndpoint {
 			if(!getStringRedisTemplate().hasKey(key)) {
 				
 				String new_uuid = UUID.randomUUID().toString();
-				String qrcode = getQrcodeTemplate().qrcodeBase64(new_uuid);
+				String qrcode = getQrcodeTemplate().encode(QrCodeRequest.builder(new_uuid).build()).base64();
 				
 				// 每个老师的随机码都不相同 ： 打卡方式(1:定位打卡,2:刷脸打卡,3:数字打卡,4:二维码打卡,5:无感打卡)
 				getStringRedisTemplate().opsForValue().set(String.format("login-%s", new_uuid), STATUS_UNBIND, Duration.ofMinutes(1));
@@ -134,7 +135,7 @@ public class ShiroQrcodeEndpoint {
 	 *
 	 * @return the qrcode template
 	 */
-	public ZxingQrCodeTemplate getQrcodeTemplate() {
+	public QrCodeEncoder getQrcodeTemplate() {
 		return qrcodeTemplate;
 	}
 	
